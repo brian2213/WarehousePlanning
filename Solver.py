@@ -91,11 +91,6 @@ class Solver(object):
         self.printer("Original cost," + str(cost))
 
     def runWithCSV(self, orderFile):
-        pathMatrix = self.model.pathMatrix
-        warehouseData = self.model.warehouseData
-        warehouseGraph = self.model.warehouseGraph
-        start = self.model.start
-        end = self.model.end
 
         orders = self.model.readOrder(orderFile)
         content = self.content
@@ -183,13 +178,11 @@ class Solver(object):
         content = ""
         if len(nodelist) == 0:
             return ""
-        # content+="Items,"+','.join(orderlist)+"\n"
+
         self.printer("Items," + ','.join(nodelist))
         start_time = time.time()
 
         self.optimizeNodeToVisited(nodelist)
-
-        # content+="Distinct places,"+','.join(self.orderNodes)+"\n"
 
         self.printer("Distinct places," + ','.join(self.orderNodes))
         self.originalDistance(nodelist)
@@ -199,13 +192,11 @@ class Solver(object):
         results = self.tsp_solver(self, self.orderNodes, iter=self.iter)
 
         # minpath.append(end)
-        # content+="Shortest Path,"+','.join(list(results[1]))+"\n"
-        # content+="Path Cost,"+str(results[0])+"\n"
         self.printer("Shortest Path," + ','.join(list(results[1])))
         self.printer("Shortest Path Cost," + str(results[0]))
 
         elapsed_time = time.time() - start_time
-        # content+="Computation Time,"+str(elapsed_time)+"\n\n"
+
         self.printer("Computation Time," + str(elapsed_time) + "\n\n")
 
         global minpath
