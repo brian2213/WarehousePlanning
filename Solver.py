@@ -18,13 +18,14 @@ class Solver(object):
         self.itemlist = []
         self.countEffort = False
         self.containerMap = {}  # give a node show all items in this node
-        self.maxWeight=sys.maxsize
+        self.maxWeight = sys.maxsize
 
-    def run(self, tsp_solver='aStarSearch', countEffort=False, iter=1e4):
+    def run(self, tsp_solver='aStarSearch', countEffort=False, iter=1e4, maxWeight=sys.maxsize):
 
         self.tsp_solver = tsp_solver
         self.countEffort = countEffort
         self.iter = iter
+        self.maxWeight = maxWeight
         if not hasattr(TSP_solver, self.tsp_solver):
             raise ValueError('Invalid update_rule "%s"' % self.tsp_solver)
         self.tsp_solver = getattr(TSP_solver, self.tsp_solver)
@@ -172,12 +173,12 @@ class Solver(object):
 
     def planner(self, nodelist):
 
-
         self.model.nodelist = nodelist
-        content = self.content
-        content = ""
+        self.content = ""
         if len(nodelist) == 0:
             return ""
+
+        self.weightOrganizer(nodelist)
 
         self.printer("Items," + ','.join(nodelist))
         start_time = time.time()
@@ -201,24 +202,47 @@ class Solver(object):
 
         global minpath
         minpath = results[1]
-        return content
+        return self.content
+
+    def weightOrganizer(self, nodelist):
+        '''split the order if the list contains items weigh too much'''
+
+        lists = []
+        list = []
+        weight = 0
+
+        for node in nodelist:
+            if node in self.model.itemProperty:
+                itemW = float(self.model.itemProperty[node].weight)
+            else:
+                print(node + " weight unknown set to average")
+                itemW = float(self.model.itemProperty['avg'])
+            weight += itemW
+            if weight > self.maxWeight:
+                weight = itemW
+                lists.append(list)
+                list = []
+            list.append(node)
+
+        lists.append(list)
+
+        return lists
 
     def optimizeNodeToVisited(self, nodelist):
         self.orderNodes = set()
         self.containerMap = {}
 
-        edges={}
-        nodes={}
-        bothSide=self.model.leftMode == True and self.model.rightMode == True
-
+        edges = {}
+        nodes = {}
+        bothSide = self.model.leftMode == True and self.model.rightMode == True
 
         for order in nodelist:
             positions = self.itemIDtoNode(order)
 
             if bothSide:
-                edge=str(positions[0])+"-"+str(positions[1])
+                edge = str(positions[0]) + "-" + str(positions[1])
                 if edge not in edges:
-                    edges[edge]=positions
+                    edges[edge] = positions
 
             for position in positions:
                 if position not in self.containerMap:
@@ -227,12 +251,11 @@ class Solver(object):
                 self.orderNodes.add(position)
                 if bothSide:
                     if position not in nodes:
-                        nodes[position]=set()
+                        nodes[position] = set()
                     nodes[position].add(edge)
 
-
         # if only one side available no need to reduce
-        nodesNeedToVisited=[]
+        nodesNeedToVisited = []
         if bothSide:
             # both side available
 
@@ -240,20 +263,19 @@ class Solver(object):
             # pickUP place as node, item as edge
             # to find minimum nodes to get all item
 
-            for node,incidents in nodes.items():
+            for node, incidents in nodes.items():
                 # pick up nodes with two edges first
                 # then delete edges
-                if len(incidents)==2:
+                if len(incidents) == 2:
                     nodesNeedToVisited.append(node)
                     for incident in incidents:
                         if incident in edges:
                             edges.pop(incident)
             # add rest node
-            for edge,node in edges.items():
+            for edge, node in edges.items():
                 nodesNeedToVisited.append(node[0])
 
-            self.orderNodes=nodesNeedToVisited
-
+            self.orderNodes = nodesNeedToVisited
 
     def MSTLowerBound(self, orderNodes):
         '''Calculating the lower bound for TSP'''

@@ -5,14 +5,12 @@ from data_tool import *
 # import cProfile
 
 
-
-def mainTSPforUi(LoadPickle=False,countEffort=False,itemFile="",warehouseGridFile="",orderlist=""):
-
+def mainTSPforUi(LoadPickle=False, countEffort=False, itemFile="", warehouseGridFile="", orderlist=""):
     warehouseGridFile = warehouseGridFile
 
     itemFile = itemFile
     # orderlist = sys.argv[3] if len(sys.argv) > 3 else ""
-    orderlist=orderlist
+    orderlist = orderlist
 
     model = warehouse_model(warehouseGridFile, itemFile=itemFile, LoadPickle=LoadPickle)
 
@@ -22,7 +20,7 @@ def mainTSPforUi(LoadPickle=False,countEffort=False,itemFile="",warehouseGridFil
 
     # solver.run('aStarSearch', countEffort=True, iter=1e4)
 
-    solver.run('aStarSearch', countEffort=countEffort,iter=1e2)
+    solver.run('aStarSearch', countEffort=countEffort, iter=1e2)
 
     # solver.run('DynamicProgramming')
 
@@ -31,6 +29,7 @@ def mainTSPforUi(LoadPickle=False,countEffort=False,itemFile="",warehouseGridFil
     # solver.run('tspNonRecursion')
 
     return solver.content
+
 
 if __name__ == "__main__":
 
@@ -50,7 +49,8 @@ if __name__ == "__main__":
 
         solver = Solver(model, orderlist=orderlist)
 
-        solver.run('aStarSearch', countEffort=True, iter=1e2)
+        solver.run('aStarSearch', countEffort=True, iter=1e2, maxWeight=30)
+
 
     LoadPickle = False
     # cProfile.run('-s tottime mainTSP(LoadPickle)')
