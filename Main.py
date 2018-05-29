@@ -42,14 +42,14 @@ if __name__ == "__main__":
         itemFile = sys.argv[2] if len(sys.argv) > 2 else ""
 
         orderlist = ""
-        # orderlist = sys.argv[3] if len(sys.argv) > 3 else ""
+        orderlist = sys.argv[3] if len(sys.argv) > 3 else ""
 
         model = warehouse_model(warehouseGridFile, itemFile=itemFile, LoadPickle=LoadPickle, leftMode=True,
-                                rightMode=True)
+                                rightMode=False)
 
         solver = Solver(model, orderlist=orderlist)
 
-        solver.run('aStarSearch', countEffort=True, iter=1e2, maxWeight=30)
+        solver.run('aStarSearch', countEffort=False, iter=1e4, maxWeight=300)
 
 
     LoadPickle = False

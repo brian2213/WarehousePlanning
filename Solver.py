@@ -97,6 +97,8 @@ class Solver(object):
         content = self.content
         content = ""
 
+        orders=self.orderCombiner(orders)
+
         self.printer("Planning routes from " + str(orderFile))
         start_time = time.time()
         num = 1  # for draw image
@@ -148,7 +150,8 @@ class Solver(object):
         content = ""
         while True:
             # self.itemlist=self.model.setOrderLists(self.model.warehouseData)
-            self.itemlist = "281610	342706	111873	198029	366109	287261	76283	254489	258540	286457																					".split()
+            self.itemlist = "281610	342706	111873	198029	366109	287261	76283	254489	258540	286457".split()
+            self.itemlist=self.weightSplit(self.itemlist)
             if len(self.itemlist) == 0:
                 print("No Items are specified")
                 continue
@@ -177,8 +180,6 @@ class Solver(object):
         self.content = ""
         if len(nodelist) == 0:
             return ""
-
-        self.weightSplit(nodelist)
 
         self.printer("Items," + ','.join(nodelist))
         start_time = time.time()
