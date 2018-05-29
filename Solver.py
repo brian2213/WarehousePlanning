@@ -148,19 +148,16 @@ class Solver(object):
         self.itemlist = []
 
         content = ""
-        while True:
-            # self.itemlist=self.model.setOrderLists(self.model.warehouseData)
-            self.itemlist = "281610	342706	111873	198029	366109	287261	76283	254489	258540	286457".split()
-            self.itemlist=self.weightSplit(self.itemlist)
-            if len(self.itemlist) == 0:
+        # self.itemlist=self.model.setOrderLists(self.model.warehouseData)
+        self.itemlist = "281610	342706	111873	198029	366109	287261	76283	254489	258540	286457".split()
+        self.itemlist=self.weightSplit(self.itemlist)
+        for smalllist in self.itemlist:
+            if len(smalllist) == 0:
                 print("No Items are specified")
-                continue
             else:
-                content += (self.planner(self.itemlist))
-                break
-
-        global originalPath
-        points = pathToPoints(originalPath)
+                content += (self.planner(smalllist))
+            global originalPath
+            points = pathToPoints(originalPath)
 
         plt.figure(0)
         self.plotTour(points)
