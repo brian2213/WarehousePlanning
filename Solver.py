@@ -204,6 +204,10 @@ class Solver(object):
         minpath = results[1]
         return self.content
 
+    def orderCombiner(self,orderlist):
+        '''combine order to the same trip'''
+        pass
+
     def weightOrganizer(self, nodelist):
         '''split the order if the list contains items weigh too much'''
 
