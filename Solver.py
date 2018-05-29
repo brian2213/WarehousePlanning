@@ -178,7 +178,7 @@ class Solver(object):
         if len(nodelist) == 0:
             return ""
 
-        self.weightOrganizer(nodelist)
+        self.weightSplit(nodelist)
 
         self.printer("Items," + ','.join(nodelist))
         start_time = time.time()
@@ -204,33 +204,52 @@ class Solver(object):
         minpath = results[1]
         return self.content
 
-    def orderCombiner(self,orderlist):
+    def orderCombiner(self, orderlist):
         '''combine order to the same trip'''
-        pass
+        lists = []
+        newlist = []
+        weight = 0
 
-    def weightOrganizer(self, nodelist):
+        for order in orderlist:
+            for item in order:
+                itemW = self.getItemWeight(item)
+                weight += itemW
+                if weight > self.maxWeight:
+                    weight = itemW
+                    lists.append(newlist)
+                    newlist = []
+                newlist.append(item)
+
+        lists.append(newlist)
+        return lists
+
+    def weightSplit(self, orderlist):
         '''split the order if the list contains items weigh too much'''
 
         lists = []
-        list = []
+        newlist = []
         weight = 0
 
-        for node in nodelist:
-            if node in self.model.itemProperty:
-                itemW = float(self.model.itemProperty[node].weight)
-            else:
-                print(node + " weight unknown set to average")
-                itemW = float(self.model.itemProperty['avg'])
+        for item in orderlist:
+            itemW = self.getItemWeight(item)
             weight += itemW
             if weight > self.maxWeight:
                 weight = itemW
-                lists.append(list)
-                list = []
-            list.append(node)
+                lists.append(newlist)
+                newlist = []
+            newlist.append(item)
 
-        lists.append(list)
+        lists.append(newlist)
 
         return lists
+
+    def getItemWeight(self, item):
+        if item in self.model.itemProperty:
+            itemW = float(self.model.itemProperty[item].weight)
+        else:
+            print(item + " weight is unknown, set to average")
+            itemW = float(self.model.itemProperty['avg'])
+        return itemW
 
     def optimizeNodeToVisited(self, nodelist):
         self.orderNodes = set()
