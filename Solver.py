@@ -1,8 +1,6 @@
 import sys
 import time
-
 import matplotlib.pyplot as plt
-
 import TSP_solver
 
 
@@ -181,8 +179,8 @@ class Solver(object):
         self.printer("Items," + ','.join(nodelist))
         start_time = time.time()
 
-        self.optimizeNodeToVisited(nodelist)
 
+        self.optimizeNodeToVisited(nodelist)
         self.printer("Distinct places," + ','.join(self.orderNodes))
         self.originalDistance(nodelist)
         lowerBound = self.MSTLowerBound(self.orderNodes)
@@ -204,6 +202,10 @@ class Solver(object):
 
     def orderCombiner(self, orderlist):
         '''combine order to the same trip'''
+
+        if self.maxWeight==sys.maxsize:
+            return [orderlist]
+
         lists = []
         newlist = []
         weight = 0
@@ -223,7 +225,8 @@ class Solver(object):
 
     def weightSplit(self, orderlist):
         '''split the order if the list contains items weigh too much'''
-
+        if self.maxWeight==sys.maxsize:
+            return [orderlist]
         lists = []
         newlist = []
         weight = 0

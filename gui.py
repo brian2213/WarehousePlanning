@@ -9,131 +9,6 @@ from matplotlib.figure import Figure
 from Main import *
 
 
-class App(QWidget):
-
-    def __init__(self):
-        super(QWidget, self).__init__()
-        self.title = 'EECS 221 Adv Alg App'
-        self.left = 10
-        self.top = 10
-        self.width = 820
-        self.height = 480
-        self.initUI()
-
-        self.gridFile = ""
-        self.orderFile = ""
-        self.itemFile = ""
-
-        self.LoadPickle = False
-        self.countEffort=False
-
-    def initUI(self):
-
-        gridFileBtn = QPushButton('Select grid file', self)
-        gridFileBtn.setToolTip('Select grid file')
-        gridFileBtn.move(0, 30)
-        gridFileBtn.clicked.connect(lambda: self.openFileDialog("gridFile"))
-
-        orderFileBtn = QPushButton('Select order file', self)
-        orderFileBtn.setToolTip('Select order file')
-        orderFileBtn.move(0, 110)
-        orderFileBtn.clicked.connect(lambda: self.openFileDialog("orderFile"))
-
-        itemFileBtn = QPushButton('Select item file', self)
-        itemFileBtn.setToolTip('Select item file')
-        itemFileBtn.move(0, 200)
-        itemFileBtn.clicked.connect(lambda: self.openFileDialog("itemFile"))
-
-
-        runSingleBtn = QPushButton('Run Single Order', self)
-        runSingleBtn.setToolTip('Run Single Order')
-        runSingleBtn.move(0, 400)
-        # runSingleBtn.clicked.connect(lambda: self.openFileDialog("itemFile"))
-
-        runBatchBtn = QPushButton('Run Batch Order', self)
-        runBatchBtn.setToolTip('Run Batch Order')
-        runBatchBtn.move(0, 430)
-        # runBatchBtn.clicked.connect(lambda: self.openFileDialog("itemFile"))
-
-        self.gridTextbox = QLineEdit(self)
-        self.gridTextbox.move(10, 60)
-        self.gridTextbox.resize(150, 20)
-
-        self.orderTextbox = QLineEdit(self)
-        self.orderTextbox.move(10, 150)
-        self.orderTextbox.resize(150, 20)
-
-        self.itemTextbox = QLineEdit(self)
-        self.itemTextbox.move(10, 230)
-        self.itemTextbox.resize(150, 40)
-
-        self.CostLabel = QLabel(self)
-        self.CostLabel.setText('Cost')
-        self.CostLabel.move(10, 530)
-        # self.CostLabel.resize(150, 20)
-
-        self.CostTextbox = QLineEdit(self)
-        self.CostTextbox.move(10, 550)
-        self.CostTextbox.resize(150, 20)
-
-        self.LoadPicklecheckBox = QCheckBox('LoadPickle', self)
-        self.LoadPicklecheckBox.move(10, 300)
-        self.LoadPicklecheckBox.stateChanged.connect(lambda :self.btnstate(self.LoadPicklecheckBox))
-        self.LoadPicklecheckBox.toggle()
-
-        self.EffortcheckBox = QCheckBox('Effort', self)
-        self.EffortcheckBox.move(10, 350)
-        self.EffortcheckBox.stateChanged.connect(lambda :self.btnstate(self.EffortcheckBox))
-        self.EffortcheckBox.toggle()
-
-        # self.orderFileBtn.clicked.connect(lambda: self.openFileDialog("orderFile"))
-        # self.gridFileBtn.clicked.connect(lambda: self.openFileDialog("gridFile"))
-        # self.itemFileBtn.clicked.connect(lambda: self.openFileDialog("itemFile"))
-        # self.LoadPicklecheckBox.stateChanged.connect(lambda: self.btnstate(self.LoadPicklecheckBox))
-        # self.EffortcheckBox.stateChanged.connect(lambda: self.btnstate(self.EffortcheckBox))
-
-        m = PlotCanvas(self)
-        m.move(200, 30)
-
-        self.setWindowTitle(self.title)
-        self.setGeometry(self.left, self.top, self.width, self.height)
-        self.show()
-
-    def btnstate(self,b):
-        if b.text() == "LoadPickle":
-            if b.isChecked() == True:
-                print(b.text() + " is selected")
-            else:
-                print(b.text() + " is deselected")
-
-        elif b.text() == "Effort":
-            if b.isChecked() == True:
-                print(b.text() + " is selected")
-            else:
-                print(b.text() + " is deselected")
-
-    def openFileDialog(self, fileVar):
-
-        options = QFileDialog.Options()
-        options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "",
-                                                  "All Files (*);;Python Files (*.py)", options=options)
-        if fileName:
-            if fileVar == "gridFile":
-                self.gridFile = fileName
-                self.gridTextbox.setText(fileName)
-                print(self.gridFile)
-            elif fileVar == "orderFile":
-                self.orderFile = fileName
-                self.orderTextbox.setText(fileName)
-            elif fileVar == "itemFile":
-                self.itemFile = fileName
-                self.itemTextbox.setText(fileName)
-
-    def on_click(self):
-        print("hello")
-
-
 class PlotCanvas(FigureCanvas):
 
     def __init__(self, parent=None, width=5, height=4, dpi=100):
@@ -273,8 +148,9 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def runsingle(self):
-        self.ResultTextEdit.setText(mainTSPforUi(LoadPickle=self.LoadPickle, itemFile=self.itemFile,
-                     warehouseGridFile=self.gridFile,countEffort=self.countEffort))
+        result=mainTSPforUi(LoadPickle=self.LoadPickle, itemFile=self.itemFile,
+                     warehouseGridFile=self.gridFile,countEffort=self.countEffort)
+        self.ResultTextEdit.setText(result)
 
     def runbatch(self):
         self.ResultTextEdit.setText(mainTSPforUi(LoadPickle=self.LoadPickle, itemFile=self.itemFile,
