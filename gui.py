@@ -120,9 +120,6 @@ class Ui_MainWindow(object):
         self.runBatch.clicked.connect(self.runbatch)
         # self.runBatch.clicked.connect(self.testOpenWindow)
 
-        # m = PlotCanvas(MainWindow)
-        # m.move(300, 30)
-
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -130,7 +127,6 @@ class Ui_MainWindow(object):
     def testOpenWindow(self):
         self.newWindows=Matplot_Window()
         self.newWindows.show()
-
 
     def runsingle(self):
         result=mainTSPforUi(LoadPickle=self.LoadPickle, itemFile=self.itemFile,
@@ -226,9 +222,6 @@ class Matplot_Window(QtWidgets.QMainWindow):
         self.setCentralWidget(self.main_widget)
 
 if __name__ == '__main__':
-    # app = QApplication(sys.argv)
-    # ex = App()
-    # sys.exit(app.exec_())
 
     app = QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
