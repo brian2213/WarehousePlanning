@@ -157,15 +157,15 @@ class Solver(object):
             global originalPath
             points = pathToPoints(originalPath)
 
-        plt.figure(0)
-        self.plotTour(points)
-
-        global minpath
-        points = pathToPoints(minpath)
-        plt.figure(1)
-        self.plotTour(points)
-
-        plt.show()
+        # plt.figure(0)
+        # self.plotTour(points)
+        #
+        # global minpath
+        # points = pathToPoints(minpath)
+        # plt.figure(1)
+        # self.plotTour(points)
+        #
+        # plt.show()
 
         self.writeOutFile(content)
 

@@ -9,28 +9,6 @@ from matplotlib.figure import Figure
 from Main import *
 
 
-class PlotCanvas(FigureCanvas):
-
-    def __init__(self, parent=None, width=5, height=4, dpi=100):
-        fig = Figure(figsize=(width, height), dpi=dpi)
-        self.axes = fig.add_subplot(111)
-
-        FigureCanvas.__init__(self, fig)
-        self.setParent(parent)
-
-        FigureCanvas.setSizePolicy(self,
-                                   QSizePolicy.Expanding,
-                                   QSizePolicy.Expanding)
-        FigureCanvas.updateGeometry(self)
-        self.plot()
-
-    def plot(self):
-        data = [random.random() for i in range(25)]
-        ax = self.figure.add_subplot(111)
-        ax.plot(data, 'r-')
-        ax.set_title('PyQt Matplotlib Example')
-        self.draw()
-
 class Ui_MainWindow(object):
 
     def __init__(self):
@@ -140,12 +118,19 @@ class Ui_MainWindow(object):
         self.EffortcheckBox.stateChanged.connect(lambda: self.btnstate(self.EffortcheckBox))
         self.runSingle.clicked.connect(self.runsingle)
         self.runBatch.clicked.connect(self.runbatch)
+        # self.runBatch.clicked.connect(self.testOpenWindow)
 
         # m = PlotCanvas(MainWindow)
         # m.move(300, 30)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+
+    def testOpenWindow(self):
+        self.newWindows=Matplot_Window()
+        self.newWindows.show()
+
 
     def runsingle(self):
         result=mainTSPforUi(LoadPickle=self.LoadPickle, itemFile=self.itemFile,
@@ -203,6 +188,43 @@ class Ui_MainWindow(object):
             elif fileVar == "itemFile":
                 self.itemFile = fileName
                 self.itemTextbox.setText(fileName)
+
+
+class PlotCanvas(FigureCanvas):
+    def __init__(self, parent=None, width=5, height=4, dpi=100):
+        fig = Figure(figsize=(width, height), dpi=dpi)
+        self.axes = fig.add_subplot(111)
+
+        FigureCanvas.__init__(self, fig)
+        self.setParent(parent)
+
+        FigureCanvas.setSizePolicy(self,
+                                   QSizePolicy.Expanding,
+                                   QSizePolicy.Expanding)
+        FigureCanvas.updateGeometry(self)
+        self.plot()
+
+    def plot(self):
+        data = [random.random() for i in range(25)]
+        ax = self.figure.add_subplot(111)
+        ax.plot(data, 'r-')
+        ax.set_title('PyQt Matplotlib Example')
+        self.draw()
+
+
+class Matplot_Window(QtWidgets.QMainWindow):
+    def __init__(self, parent=None):
+        super(Matplot_Window, self).__init__(parent)
+
+        self.main_widget = QtWidgets.QWidget(self)
+        l = QtWidgets.QVBoxLayout(self.main_widget)
+        sc = PlotCanvas(self.main_widget, width=5, height=4, dpi=100)
+        dc = PlotCanvas(self.main_widget, width=5, height=4, dpi=100)
+        l.addWidget(sc)
+        l.addWidget(dc)
+        self.main_widget.setFocus()
+        self.setCentralWidget(self.main_widget)
+
 if __name__ == '__main__':
     # app = QApplication(sys.argv)
     # ex = App()

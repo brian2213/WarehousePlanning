@@ -509,8 +509,8 @@ def aStarSearch(solver, orderNodes, upperbound=sys.maxsize, iter=1e2, printTree=
 
 
 def BenchmarkTSP(model, LoadPickle=False):
+    """used for evaluating the performance of creating preprocessing data"""
     h = hpy()
-
     warehouseData = readWarehouse(sys.argv[1])  # warehouseData contains {"items","minmax"}
     warehouseGraph = initWarehouse(warehouseData)  # warehouseGraph contains {"nodes","edges","items","minmax"}
 
