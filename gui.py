@@ -138,6 +138,7 @@ class Ui_MainWindow(object):
         self.ResultTextEdit.setObjectName("ResultTextEdit")
         self.verticalLayout_6.addWidget(self.ResultTextEdit)
         self.horizontalLayout.addLayout(self.verticalLayout_6)
+        self.horizontalLayout.setStretch(1, 1)
         self.horizontalLayout_5.addWidget(self.horizontalWidget_2)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtWidgets.QMenuBar(MainWindow)
