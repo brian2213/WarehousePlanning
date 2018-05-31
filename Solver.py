@@ -1,6 +1,8 @@
 import sys
 import time
+
 import matplotlib.pyplot as plt
+
 import TSP_solver
 
 
@@ -18,8 +20,8 @@ class Solver(object):
         self.containerMap = {}  # give a node show all items in this node
         self.maxWeight = sys.maxsize
 
-        self.routePoints=[]
-        self.originRoutePoints=[]
+        self.routePoints = []
+        self.originRoutePoints = []
 
     def run(self, tsp_solver='aStarSearch', countEffort=False, iter=1e4, maxWeight=sys.maxsize):
 
@@ -98,7 +100,7 @@ class Solver(object):
         content = self.content
         content = ""
 
-        orders=self.orderCombiner(orders)
+        orders = self.orderCombiner(orders)
 
         self.printer("Planning routes from " + str(orderFile))
         start_time = time.time()
@@ -151,7 +153,7 @@ class Solver(object):
         content = ""
         # self.itemlist=self.model.setOrderLists(self.model.warehouseData)
         self.itemlist = "281610	342706	111873	198029	366109	287261	76283	254489	258540	286457".split()
-        self.itemlist=self.weightSplit(self.itemlist)
+        self.itemlist = self.weightSplit(self.itemlist)
         for smalllist in self.itemlist:
             if len(smalllist) == 0:
                 print("No Items are specified")
@@ -160,7 +162,7 @@ class Solver(object):
             global originalPath
             points = pathToPoints(originalPath)
 
-        self.originRoutePoints=points
+        self.originRoutePoints = points
         # plt.figure(0)
         # self.plotTour(points)
         #
@@ -182,7 +184,6 @@ class Solver(object):
 
         self.printer("Items," + ','.join(nodelist))
         start_time = time.time()
-
 
         self.optimizeNodeToVisited(nodelist)
         self.printer("Distinct places," + ','.join(self.orderNodes))
@@ -207,7 +208,7 @@ class Solver(object):
     def orderCombiner(self, orderlist):
         '''combine order to the same trip'''
 
-        if self.maxWeight==sys.maxsize:
+        if self.maxWeight == sys.maxsize:
             return [orderlist]
 
         lists = []
@@ -229,7 +230,7 @@ class Solver(object):
 
     def weightSplit(self, orderlist):
         '''split the order if the list contains items weigh too much'''
-        if self.maxWeight==sys.maxsize:
+        if self.maxWeight == sys.maxsize:
             return [orderlist]
         lists = []
         newlist = []
