@@ -1,10 +1,7 @@
-import random
-
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QApplication, QSizePolicy, QWidget, \
-    QPushButton, QFileDialog, QLineEdit, QCheckBox, QLabel
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from PyQt5.QtWidgets import QApplication, QSizePolicy, QFileDialog
 from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 from Main import *
 
@@ -16,7 +13,10 @@ class Ui_MainWindow(object):
         self.orderFile = ""
         self.itemFile = ""
         self.LoadPickle = False
-        self.countEffort=False
+        self.countEffort = False
+
+        self.modelChanged = True
+        self.wareHouse = None
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -110,7 +110,6 @@ class Ui_MainWindow(object):
         self.statusBar.setObjectName("statusBar")
         MainWindow.setStatusBar(self.statusBar)
 
-
         self.orderFileBtn.clicked.connect(lambda: self.openFileDialog("orderFile"))
         self.gridFileBtn.clicked.connect(lambda: self.openFileDialog("gridFile"))
         self.itemFileBtn.clicked.connect(lambda: self.openFileDialog("itemFile"))
@@ -118,25 +117,44 @@ class Ui_MainWindow(object):
         self.EffortcheckBox.stateChanged.connect(lambda: self.btnstate(self.EffortcheckBox))
         self.runSingle.clicked.connect(self.runsingle)
         self.runBatch.clicked.connect(self.runbatch)
-        # self.runBatch.clicked.connect(self.testOpenWindow)
+        # self.runBatch.clicked.connect(self.DrawResult)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-
-    def testOpenWindow(self):
-        self.newWindows=Matplot_Window()
+    def DrawResult(self, model=None, points=[], title="route"):
+        if model == None:
+            return
+        self.newWindows = Matplot_Window(model=model, points=points, title=title)
         self.newWindows.show()
 
     def runsingle(self):
-        result=mainTSPforUi(LoadPickle=self.LoadPickle, itemFile=self.itemFile,
-                     warehouseGridFile=self.gridFile,countEffort=self.countEffort)
-        self.ResultTextEdit.setText(result)
+
+        if self.wareHouse is None or self.modelChanged:
+            self.wareHouse = mainWareHouse(warehouseGridFile=self.gridFile, itemFile=self.itemFile,
+                                           LoadPickle=self.LoadPickle)
+            # result=mainTSPforUi(LoadPickle=self.LoadPickle, itemFile=self.itemFile,
+            #              warehouseGridFile=self.gridFile,countEffort=self.countEffort)
+            self.modelChanged = False
+
+
+        content = self.wareHouse.runSolver(countEffort=self.countEffort)
+
+        self.ResultTextEdit.setText(content)
+        self.DrawResult(model=self.wareHouse.model, points=self.wareHouse.solver.originRoutePoints,
+                        title="Original Route")
+        self.DrawResult(model=self.wareHouse.model, points=self.wareHouse.solver.originRoutePoints,
+                        title="Optimized Route")
 
     def runbatch(self):
-        self.ResultTextEdit.setText(mainTSPforUi(LoadPickle=self.LoadPickle, itemFile=self.itemFile,
-                                                 warehouseGridFile=self.gridFile, orderlist=self.orderFile,
-                                                 countEffort=self.countEffort))
+
+        if self.wareHouse == None or self.modelChanged:
+            self.ResultTextEdit.setText(mainTSPforUi(LoadPickle=self.LoadPickle, itemFile=self.itemFile,
+                                                     warehouseGridFile=self.gridFile, orderlist=self.orderFile,
+                                                     countEffort=self.countEffort))
+
+        else:
+            self.modelChanged = False
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -162,10 +180,10 @@ class Ui_MainWindow(object):
         elif b.text() == "Effort":
             if b.isChecked() == True:
                 print(b.text() + " is selected")
-                self.countEffort=True
+                self.countEffort = True
             else:
                 print(b.text() + " is deselected")
-                self.countEffort=False
+                self.countEffort = False
 
     def openFileDialog(self, fileVar):
 
@@ -177,6 +195,7 @@ class Ui_MainWindow(object):
             if fileVar == "gridFile":
                 self.gridFile = fileName
                 self.gridTextbox.setText(fileName)
+                self.modelChanged = True
                 print(self.gridFile)
             elif fileVar == "orderFile":
                 self.orderFile = fileName
@@ -186,8 +205,8 @@ class Ui_MainWindow(object):
                 self.itemTextbox.setText(fileName)
 
 
-class PlotCanvas(FigureCanvas):
-    def __init__(self, parent=None, width=5, height=4, dpi=100):
+class plotTour(FigureCanvas):
+    def __init__(self, parent=None, width=5, height=4, dpi=100, model=None, points=[], title="route"):
         fig = Figure(figsize=(width, height), dpi=dpi)
         self.axes = fig.add_subplot(111)
 
@@ -198,31 +217,39 @@ class PlotCanvas(FigureCanvas):
                                    QSizePolicy.Expanding,
                                    QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
-        self.plot()
 
-    def plot(self):
-        data = [random.random() for i in range(25)]
-        ax = self.figure.add_subplot(111)
-        ax.plot(data, 'r-')
-        ax.set_title('PyQt Matplotlib Example')
-        self.draw()
+        if model == None:
+            raise Exception("No data model to draw the plot")
+
+        minmax = model.minmax
+        self.axes = fig.add_subplot(111)
+        self.axes.axis(minmax)
+        self.axes.grid(True)
+        self.axes.set_title(title)
+        self.axes.set_xticks(range(minmax[0], minmax[1], 1))
+        self.axes.set_yticks(range(minmax[2], minmax[3], 1))
+        for i in range(1, len(points), 1):
+            x1 = [points[i - 1][0], points[i][0]]
+            y1 = [points[i - 1][1], points[i][1]]
+            self.axes.plot(x1, y1, marker='o')
+        # self.axes.plot()
 
 
 class Matplot_Window(QtWidgets.QMainWindow):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, model=None, points=[], title="route"):
         super(Matplot_Window, self).__init__(parent)
 
         self.main_widget = QtWidgets.QWidget(self)
         l = QtWidgets.QVBoxLayout(self.main_widget)
-        sc = PlotCanvas(self.main_widget, width=5, height=4, dpi=100)
-        dc = PlotCanvas(self.main_widget, width=5, height=4, dpi=100)
+        sc = plotTour(self.main_widget, width=5, height=4, dpi=100, model=model, points=points, title=title)
+        # dc = plotTour(self.main_widget, width=5, height=4, dpi=100,model=model,points=points)
         l.addWidget(sc)
-        l.addWidget(dc)
+        # l.addWidget(dc)
         self.main_widget.setFocus()
         self.setCentralWidget(self.main_widget)
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
     app = QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()

@@ -1,32 +1,31 @@
 from Solver import *
 from data_tool import *
 
+class mainWareHouse(object):
 
-# import cProfile
+    def __init__(self,LoadPickle=False, itemFile="", warehouseGridFile=""):
+        self.model = warehouse_model(warehouseGridFile, itemFile=itemFile, LoadPickle=LoadPickle)
+        self.solver=None
+
+    def runSolver(self,countEffort=False, iter=1e2, orderlist=""):
+        self.solver = Solver(self.model, orderlist=orderlist)
+        self.solver.run('aStarSearch', countEffort=countEffort, iter=1e2)
+        return self.solver.content
 
 
 def mainTSPforUi(LoadPickle=False, countEffort=False, itemFile="", warehouseGridFile="", orderlist=""):
     warehouseGridFile = warehouseGridFile
 
     itemFile = itemFile
-    # orderlist = sys.argv[3] if len(sys.argv) > 3 else ""
     orderlist = orderlist
 
     model = warehouse_model(warehouseGridFile, itemFile=itemFile, LoadPickle=LoadPickle)
 
     solver = Solver(model, orderlist=orderlist)
 
-    # solver.run('BranchAndBoundSearch',iter=1e4)
-
-    # solver.run('aStarSearch', countEffort=True, iter=1e4)
-
     solver.run('aStarSearch', countEffort=countEffort, iter=1e2)
 
     # solver.run('DynamicProgramming')
-
-    # solver.run('tspPythonPermute')
-
-    # solver.run('tspNonRecursion')
 
     return solver.content
 

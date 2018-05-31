@@ -18,6 +18,9 @@ class Solver(object):
         self.containerMap = {}  # give a node show all items in this node
         self.maxWeight = sys.maxsize
 
+        self.routePoints=[]
+        self.originRoutePoints=[]
+
     def run(self, tsp_solver='aStarSearch', countEffort=False, iter=1e4, maxWeight=sys.maxsize):
 
         self.tsp_solver = tsp_solver
@@ -157,11 +160,12 @@ class Solver(object):
             global originalPath
             points = pathToPoints(originalPath)
 
+        self.originRoutePoints=points
         # plt.figure(0)
         # self.plotTour(points)
         #
         # global minpath
-        # points = pathToPoints(minpath)
+        self.routePoints = pathToPoints(minpath)
         # plt.figure(1)
         # self.plotTour(points)
         #
