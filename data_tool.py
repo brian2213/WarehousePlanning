@@ -4,15 +4,18 @@ from shortest_path_solver import *
 
 
 class warehouse_model():
-    def __init__(self, warehouseFile, itemFile="", LoadPickle=False,leftMode=True,rightMode=True):
+    def __init__(self, warehouseFile, itemFile="", LoadPickle=False,leftMode=True,rightMode=True, startNode="0*0",
+                 endNode="0*0"):
         start_time = time.time();
         self.minmax = [0, 0, 0, 0]  # represent minx,maxx,miny,maxy
         self.leftMode=leftMode
         self.rightMode=rightMode
 
-        self.warehouseData = self.readWarehouse(warehouseFile)  # warehouseData contains {"items","minmax"}
-        self.warehouseGraph = self.initWarehouse(
-            self.warehouseData)  # warehouseGraph contains {"nodes","edges","items","minmax"}
+        # warehouseData contains {"items","minmax"}
+        self.warehouseData = self.readWarehouse(warehouseFile)
+
+        # warehouseGraph contains {"nodes","edges","items","minmax"}
+        self.warehouseGraph = self.initWarehouse(self.warehouseData)
         self.itemProperty = self.readItemProperty(itemFile)
         print("Time spent on initialize warehouse data:" + str(time.time() - start_time))
         # print("Memory used on initialize warehouse data:"+str((h.heap().size-msize)/float(1024*1024)))
@@ -23,8 +26,8 @@ class warehouse_model():
         # start=setStartPos(warehouseData)
         # end=setEndPos(warehouseData)
 
-        self.start = "0*0"
-        self.end = "18*0"
+        self.start = startNode
+        self.end = endNode
         start_time = time.time()
         # create path matrix
         # LoadPickle=True

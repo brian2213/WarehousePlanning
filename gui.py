@@ -18,6 +18,10 @@ class Ui_MainWindow(object):
         self.modelChanged = True
         self.wareHouse = None
 
+        self.start="0*0"
+        self.end="0*0"
+        self.startOrEndChanged=True
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(756, 543)
@@ -158,11 +162,18 @@ class Ui_MainWindow(object):
         self.statusBar.setObjectName("statusBar")
         MainWindow.setStatusBar(self.statusBar)
 
+
         self.orderFileBtn.clicked.connect(lambda: self.openFileDialog("orderFile"))
         self.gridFileBtn.clicked.connect(lambda: self.openFileDialog("gridFile"))
         self.itemFileBtn.clicked.connect(lambda: self.openFileDialog("itemFile"))
         self.LoadPicklecheckBox.stateChanged.connect(lambda: self.btnstate(self.LoadPicklecheckBox))
         self.EffortcheckBox.stateChanged.connect(lambda: self.btnstate(self.EffortcheckBox))
+
+        self.startNodeLineEdit.textChanged.connect(self.chageNode)
+        self.startNodeLineEdit_2.textChanged.connect(self.chageNode)
+        self.endNodeLineEdit.textChanged.connect(self.chageNode)
+        self.endNodeLineEdit_2.textChanged.connect(self.chageNode)
+
         self.runSingle.clicked.connect(self.runsingle)
         self.runBatch.clicked.connect(self.runbatch)
         # self.runBatch.clicked.connect(self.DrawResult)
@@ -175,6 +186,9 @@ class Ui_MainWindow(object):
             return
         self.newWindows = Matplot_Window(model=model, points=points, title=title)
         self.newWindows.show()
+
+    def chageNode(self):
+        self.startOrEndChanged=True
 
     def runsingle(self):
 
@@ -189,13 +203,16 @@ class Ui_MainWindow(object):
             leftMode = True
             rightMode = True
 
+        if self.wareHouse is None or self.modelChanged or self.startOrEndChanged:
+            startNode = self.startNodeLineEdit.text() + "*" + self.startNodeLineEdit_2.text()
+            endNode = self.endNodeLineEdit.text() + "*" + self.endNodeLineEdit_2.text()
 
-        if self.wareHouse is None or self.modelChanged:
             self.wareHouse = mainWareHouse(warehouseGridFile=self.gridFile, itemFile=self.itemFile,
-                                           LoadPickle=self.LoadPickle)
+                                           LoadPickle=self.LoadPickle,startNode=startNode,endNode=endNode)
             # result=mainTSPforUi(LoadPickle=self.LoadPickle, itemFile=self.itemFile,
             #              warehouseGridFile=self.gridFile,countEffort=self.countEffort)
             self.modelChanged = False
+            self.startOrEndChanged = False
 
 
         content = self.wareHouse.runSolver(countEffort=self.countEffort,leftMode=leftMode,rightMode=rightMode)

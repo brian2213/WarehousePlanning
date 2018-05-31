@@ -1,15 +1,17 @@
 from Solver import *
 from data_tool import *
 
+
 class mainWareHouse(object):
 
-    def __init__(self,LoadPickle=False, itemFile="", warehouseGridFile=""):
-        self.model = warehouse_model(warehouseGridFile, itemFile=itemFile, LoadPickle=LoadPickle)
-        self.solver=None
+    def __init__(self, LoadPickle=False, itemFile="", warehouseGridFile="", startNode="0*0", endNode="0*0"):
+        self.model = warehouse_model(warehouseGridFile, itemFile=itemFile, LoadPickle=LoadPickle, startNode=startNode,
+                                     endNode=endNode)
+        self.solver = None
 
-    def runSolver(self,countEffort=False, iter=1e2, orderlist="",leftMode=True,rightMode=False):
+    def runSolver(self, countEffort=False, iter=1e2, orderlist="", leftMode=True, rightMode=False):
         self.solver = Solver(self.model, orderlist=orderlist)
-        self.solver.run('aStarSearch', countEffort=countEffort, iter=1e2,leftMode=leftMode,rightMode=rightMode)
+        self.solver.run('aStarSearch', countEffort=countEffort, iter=1e2, leftMode=leftMode, rightMode=rightMode)
         return self.solver.content
 
 
