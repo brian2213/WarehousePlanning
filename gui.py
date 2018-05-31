@@ -178,6 +178,18 @@ class Ui_MainWindow(object):
 
     def runsingle(self):
 
+
+        if self.ModeComboBox.currentText() == "Left":
+            leftMode = True
+            rightMode = False
+        elif self.ModeComboBox.currentText() == "Right":
+            leftMode = False
+            rightMode = True
+        else:
+            leftMode = True
+            rightMode = True
+
+
         if self.wareHouse is None or self.modelChanged:
             self.wareHouse = mainWareHouse(warehouseGridFile=self.gridFile, itemFile=self.itemFile,
                                            LoadPickle=self.LoadPickle)
@@ -186,7 +198,7 @@ class Ui_MainWindow(object):
             self.modelChanged = False
 
 
-        content = self.wareHouse.runSolver(countEffort=self.countEffort)
+        content = self.wareHouse.runSolver(countEffort=self.countEffort,leftMode=leftMode,rightMode=rightMode)
 
         self.ResultTextEdit.setText(content)
 

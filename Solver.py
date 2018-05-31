@@ -20,10 +20,16 @@ class Solver(object):
         self.containerMap = {}  # give a node show all items in this node
         self.maxWeight = sys.maxsize
 
+        self.leftMode=True
+        self.rightMode=False
+
         self.routePoints = []
         self.originRoutePoints = []
 
-    def run(self, tsp_solver='aStarSearch', countEffort=False, iter=1e4, maxWeight=sys.maxsize):
+    def run(self, tsp_solver='aStarSearch', countEffort=False, iter=1e4, maxWeight=sys.maxsize,leftMode=True,rightMode=False):
+
+        self.leftMode=leftMode
+        self.rightMode=rightMode
 
         self.tsp_solver = tsp_solver
         self.countEffort = countEffort
@@ -65,7 +71,7 @@ class Solver(object):
         path = []
         totalWeight = 1
         for order in orderlist:
-            if self.model.leftMode:
+            if self.leftMode:
                 node = str(items[order][0]) + "*" + str(items[order][1]) + "*pick"
             else:
                 node = str(items[order][0] + 1) + "*" + str(items[order][1]) + "*pick"
@@ -263,7 +269,7 @@ class Solver(object):
 
         edges = {}
         nodes = {}
-        bothSide = self.model.leftMode == True and self.model.rightMode == True
+        bothSide = self.leftMode == True and self.rightMode == True
 
         for order in nodelist:
             positions = self.itemIDtoNode(order)
@@ -366,9 +372,9 @@ class Solver(object):
             return
         targetpos = [grid[target][0], grid[target][1]]
         targetNode = []
-        if self.model.leftMode:
+        if self.leftMode:
             targetNode.append(str(grid[target][0]) + "*" + str(grid[target][1]) + "*pick")
-        if self.model.rightMode:
+        if self.rightMode:
             targetNode.append(str(grid[target][0] + 1) + "*" + str(grid[target][1]) + "*pick")
         # print("Target position:"+str(targetNode))
         # print("")

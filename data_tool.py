@@ -4,7 +4,7 @@ from shortest_path_solver import *
 
 
 class warehouse_model():
-    def __init__(self, warehouseFile, itemFile="", LoadPickle=False,leftMode=True,rightMode=False):
+    def __init__(self, warehouseFile, itemFile="", LoadPickle=False,leftMode=True,rightMode=True):
         start_time = time.time();
         self.minmax = [0, 0, 0, 0]  # represent minx,maxx,miny,maxy
         self.leftMode=leftMode

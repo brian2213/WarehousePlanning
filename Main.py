@@ -7,9 +7,9 @@ class mainWareHouse(object):
         self.model = warehouse_model(warehouseGridFile, itemFile=itemFile, LoadPickle=LoadPickle)
         self.solver=None
 
-    def runSolver(self,countEffort=False, iter=1e2, orderlist=""):
+    def runSolver(self,countEffort=False, iter=1e2, orderlist="",leftMode=True,rightMode=False):
         self.solver = Solver(self.model, orderlist=orderlist)
-        self.solver.run('aStarSearch', countEffort=countEffort, iter=1e2)
+        self.solver.run('aStarSearch', countEffort=countEffort, iter=1e2,leftMode=leftMode,rightMode=rightMode)
         return self.solver.content
 
 
