@@ -141,10 +141,14 @@ class Ui_MainWindow(object):
         content = self.wareHouse.runSolver(countEffort=self.countEffort)
 
         self.ResultTextEdit.setText(content)
-        self.DrawResult(model=self.wareHouse.model, points=self.wareHouse.solver.originRoutePoints,
+
+        self.newWindows = Matplot_Window(model=self.wareHouse.model, points=self.wareHouse.solver.originRoutePoints,
                         title="Original Route")
-        self.DrawResult(model=self.wareHouse.model, points=self.wareHouse.solver.originRoutePoints,
-                        title="Optimized Route")
+        self.newWindows.show()
+
+        self.newWindows2 = Matplot_Window(model=self.wareHouse.model, points=self.wareHouse.solver.routePoints,
+                                         title="Optimized Route")
+        self.newWindows2.show()
 
     def runbatch(self):
 
