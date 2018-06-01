@@ -20,16 +20,17 @@ class Solver(object):
         self.containerMap = {}  # give a node show all items in this node
         self.maxWeight = sys.maxsize
 
-        self.leftMode=True
-        self.rightMode=False
+        self.leftMode = True
+        self.rightMode = False
 
         self.routePoints = []
         self.originRoutePoints = []
 
-    def run(self, tsp_solver='aStarSearch', countEffort=False, iter=1e4, maxWeight=sys.maxsize,leftMode=True,rightMode=False):
+    def run(self, tsp_solver='aStarSearch', countEffort=False, iter=1e4, maxWeight=sys.maxsize, leftMode=True,
+            rightMode=False,orders=[]):
 
-        self.leftMode=leftMode
-        self.rightMode=rightMode
+        self.leftMode = leftMode
+        self.rightMode = rightMode
 
         self.tsp_solver = tsp_solver
         self.countEffort = countEffort
@@ -42,7 +43,7 @@ class Solver(object):
         if len(self.orderlist) > 0:
             self.runWithCSV(self.orderlist)
         else:
-            self.runWithUserSpecified()
+            self.runWithUserSpecified(orders)
 
     def printer(self, s):
         self.content += str(s) + "\n"
@@ -137,7 +138,7 @@ class Solver(object):
         self.printer("Total Time for order," + str(time.time() - start_time))
         self.writeOutFile(content)
 
-    def runWithUserSpecified(self):
+    def runWithUserSpecified(self,order=[]):
         content = self.content
 
         def pathToPoints(minpath):
@@ -158,7 +159,8 @@ class Solver(object):
 
         content = ""
         # self.itemlist=self.model.setOrderLists(self.model.warehouseData)
-        self.itemlist = "281610	342706	111873	198029	366109	287261	76283	254489	258540	286457".split()
+        # self.itemlist = "281610	342706	111873	198029	366109	287261	76283	254489	258540	286457".split()
+        self.itemlist = order
         self.itemlist = self.weightSplit(self.itemlist)
         for smalllist in self.itemlist:
             if len(smalllist) == 0:

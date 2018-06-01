@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QApplication, QSizePolicy, QFileDialog
-from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
 
 from Main import *
 
@@ -18,9 +18,11 @@ class Ui_MainWindow(object):
         self.modelChanged = True
         self.wareHouse = None
 
-        self.start="0*0"
-        self.end="0*0"
-        self.startOrEndChanged=True
+        self.start = "0*0"
+        self.end = "0*0"
+        self.startOrEndChanged = True
+
+        self.orders = []
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -114,8 +116,6 @@ class Ui_MainWindow(object):
         self.gridLayout_3.addWidget(self.orderTextbox, 0, 2, 1, 2)
         self.OrderComboBox = QtWidgets.QComboBox(self.horizontalWidget_2)
         self.OrderComboBox.setObjectName("OrderComboBox")
-        self.OrderComboBox.addItem("")
-        self.OrderComboBox.addItem("")
         self.gridLayout_3.addWidget(self.OrderComboBox, 0, 4, 1, 1)
         self.orderLabel = QtWidgets.QLabel(self.horizontalWidget_2)
         self.orderLabel.setObjectName("orderLabel")
@@ -162,7 +162,6 @@ class Ui_MainWindow(object):
         self.statusBar.setObjectName("statusBar")
         MainWindow.setStatusBar(self.statusBar)
 
-
         self.orderFileBtn.clicked.connect(lambda: self.openFileDialog("orderFile"))
         self.gridFileBtn.clicked.connect(lambda: self.openFileDialog("gridFile"))
         self.itemFileBtn.clicked.connect(lambda: self.openFileDialog("itemFile"))
@@ -173,6 +172,7 @@ class Ui_MainWindow(object):
         self.startNodeLineEdit_2.textChanged.connect(self.chageNode)
         self.endNodeLineEdit.textChanged.connect(self.chageNode)
         self.endNodeLineEdit_2.textChanged.connect(self.chageNode)
+        self.OrderComboBox.currentIndexChanged.connect(self.orderChanged)
 
         self.runSingle.clicked.connect(self.runsingle)
         self.runBatch.clicked.connect(self.runbatch)
@@ -181,6 +181,23 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+    def orderChanged(self, i):
+        if i < len(self.orders):
+            self.orderLineEdit.setText(" ".join(self.orders[i]))
+
+    def readOrder(self, file):
+
+        with open(file, 'r') as f:
+            orders = []
+            i = 1
+            self.OrderComboBox.clear()
+            for line in f:
+                orders.append(line.split())
+                self.OrderComboBox.addItem("#Order " + str(i))
+                i += 1
+
+            self.orders = orders
+
     def DrawResult(self, model=None, points=[], title="route"):
         if model == None:
             return
@@ -188,10 +205,9 @@ class Ui_MainWindow(object):
         self.newWindows.show()
 
     def chageNode(self):
-        self.startOrEndChanged=True
+        self.startOrEndChanged = True
 
     def runsingle(self):
-
 
         if self.ModeComboBox.currentText() == "Left":
             leftMode = True
@@ -208,23 +224,23 @@ class Ui_MainWindow(object):
             endNode = self.endNodeLineEdit.text() + "*" + self.endNodeLineEdit_2.text()
 
             self.wareHouse = mainWareHouse(warehouseGridFile=self.gridFile, itemFile=self.itemFile,
-                                           LoadPickle=self.LoadPickle,startNode=startNode,endNode=endNode)
+                                           LoadPickle=self.LoadPickle, startNode=startNode, endNode=endNode)
             # result=mainTSPforUi(LoadPickle=self.LoadPickle, itemFile=self.itemFile,
             #              warehouseGridFile=self.gridFile,countEffort=self.countEffort)
             self.modelChanged = False
             self.startOrEndChanged = False
 
-
-        content = self.wareHouse.runSolver(countEffort=self.countEffort,leftMode=leftMode,rightMode=rightMode)
+        content = self.wareHouse.runSolver(countEffort=self.countEffort, leftMode=leftMode, rightMode=rightMode,
+                                           orders=self.orderLineEdit.text().split())
 
         self.ResultTextEdit.setText(content)
 
         self.newWindows = Matplot_Window(model=self.wareHouse.model, points=self.wareHouse.solver.originRoutePoints,
-                        title="Original Route")
+                                         title="Original Route")
         self.newWindows.show()
 
         self.newWindows2 = Matplot_Window(model=self.wareHouse.model, points=self.wareHouse.solver.routePoints,
-                                         title="Optimized Route")
+                                          title="Optimized Route")
         self.newWindows2.show()
 
     def runbatch(self):
@@ -254,8 +270,6 @@ class Ui_MainWindow(object):
         self.endNodeLineEdit.setText(_translate("MainWindow", "0"))
         self.endNodeLineEdit_2.setText(_translate("MainWindow", "0"))
         self.orderFileBtn.setText(_translate("MainWindow", "Select oder file"))
-        self.OrderComboBox.setItemText(0, _translate("MainWindow", "Order1"))
-        self.OrderComboBox.setItemText(1, _translate("MainWindow", "Order2"))
         self.orderLabel.setText(_translate("MainWindow", "Order"))
         self.runSingle.setText(_translate("MainWindow", "Run Order"))
         self.runBatch.setText(_translate("MainWindow", "Run Batch Order"))
@@ -296,6 +310,8 @@ class Ui_MainWindow(object):
             elif fileVar == "orderFile":
                 self.orderFile = fileName
                 self.orderTextbox.setText(fileName)
+                self.readOrder(fileName)
+                self.orderChanged(0)
             elif fileVar == "itemFile":
                 self.itemFile = fileName
                 self.itemTextbox.setText(fileName)

@@ -9,9 +9,10 @@ class mainWareHouse(object):
                                      endNode=endNode)
         self.solver = None
 
-    def runSolver(self, countEffort=False, iter=1e2, orderlist="", leftMode=True, rightMode=False):
+    def runSolver(self, countEffort=False, iter=1e5, orderlist="", leftMode=True, rightMode=False, orders=[]):
         self.solver = Solver(self.model, orderlist=orderlist)
-        self.solver.run('aStarSearch', countEffort=countEffort, iter=1e2, leftMode=leftMode, rightMode=rightMode)
+        self.solver.run('aStarSearch', countEffort=countEffort, iter=iter, leftMode=leftMode, rightMode=rightMode,
+                        orders=orders)
         return self.solver.content
 
 
