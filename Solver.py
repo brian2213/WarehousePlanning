@@ -27,7 +27,7 @@ class Solver(object):
         self.originRoutePoints = []
 
     def run(self, tsp_solver='aStarSearch', countEffort=False, iter=1e4, maxWeight=sys.maxsize, leftMode=True,
-            rightMode=False,orders=[]):
+            rightMode=False,orders=""):
 
         self.leftMode = leftMode
         self.rightMode = rightMode
@@ -138,7 +138,7 @@ class Solver(object):
         self.printer("Total Time for order," + str(time.time() - start_time))
         self.writeOutFile(content)
 
-    def runWithUserSpecified(self,order=[]):
+    def runWithUserSpecified(self,order=""):
         content = self.content
 
         def pathToPoints(minpath):
@@ -160,7 +160,7 @@ class Solver(object):
         content = ""
         # self.itemlist=self.model.setOrderLists(self.model.warehouseData)
         # self.itemlist = "281610	342706	111873	198029	366109	287261	76283	254489	258540	286457".split()
-        self.itemlist = order
+        self.itemlist = order.split()
         self.itemlist = self.weightSplit(self.itemlist)
         for smalllist in self.itemlist:
             if len(smalllist) == 0:

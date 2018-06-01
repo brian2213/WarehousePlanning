@@ -423,9 +423,10 @@ def aStarSearch(solver, orderNodes, upperbound=sys.maxsize, iter=1e2, printTree=
 
     TotalWeight = 0
     if solver.countEffort:
-        for node in solver.itemlist:
-            TotalWeight += solver.model.itemProperty[node].weight if node in solver.model.itemProperty else \
-            solver.model.itemProperty['avg']
+        for itemlist in solver.itemlist:
+            for node in itemlist:
+                TotalWeight += solver.model.itemProperty[node].weight if node in solver.model.itemProperty else \
+                solver.model.itemProperty['avg']
 
     # prediction for the root node is not necessary
     #
