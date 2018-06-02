@@ -22,12 +22,14 @@ class Solver(object):
 
         self.leftMode = True
         self.rightMode = False
+        self.CombineOrder=False
+        self.WeightLimit=False
 
         self.routePoints = []
         self.originRoutePoints = []
 
     def run(self, tsp_solver='aStarSearch', countEffort=False, iter=1e4, maxWeight=sys.maxsize, leftMode=True,
-            rightMode=False,orders=""):
+            rightMode=False,orders="",WeightLimit=False,CombineOrder=False):
 
         self.leftMode = leftMode
         self.rightMode = rightMode
@@ -36,6 +38,9 @@ class Solver(object):
         self.countEffort = countEffort
         self.iter = iter
         self.maxWeight = maxWeight
+        self.WeightLimit=WeightLimit
+        self.CombineOrder=CombineOrder
+
         if not hasattr(TSP_solver, self.tsp_solver):
             raise ValueError('Invalid update_rule "%s"' % self.tsp_solver)
         self.tsp_solver = getattr(TSP_solver, self.tsp_solver)
@@ -216,7 +221,7 @@ class Solver(object):
     def orderCombiner(self, orderlist):
         '''combine order to the same trip'''
 
-        if self.maxWeight == sys.maxsize:
+        if self.maxWeight == sys.maxsize or not self.CombineOrder:
             return [orderlist]
 
         lists = []
@@ -238,7 +243,7 @@ class Solver(object):
 
     def weightSplit(self, orderlist):
         '''split the order if the list contains items weigh too much'''
-        if self.maxWeight == sys.maxsize:
+        if self.maxWeight == sys.maxsize or not self.WeightLimit:
             return [orderlist]
         lists = []
         newlist = []

@@ -1,3 +1,5 @@
+import sys
+
 from Solver import *
 from data_tool import *
 
@@ -9,10 +11,11 @@ class mainWareHouse(object):
                                      endNode=endNode)
         self.solver = None
 
-    def runSolver(self, countEffort=False, iter=1e5, orderlist="", leftMode=True, rightMode=False, orders=""):
+    def runSolver(self, countEffort=False, iter=1e5, orderlist="", leftMode=True, rightMode=False, orders="",
+                  maxWeight=sys.maxsize, WeightLimit=False, CombineOrder=False):
         self.solver = Solver(self.model, orderlist=orderlist)
         self.solver.run('aStarSearch', countEffort=countEffort, iter=iter, leftMode=leftMode, rightMode=rightMode,
-                        orders=orders)
+                        orders=orders, maxWeight=maxWeight, WeightLimit=WeightLimit, CombineOrder=CombineOrder)
         return self.solver.content
 
 

@@ -178,14 +178,16 @@ class Ui_MainWindow(object):
         self.runBatch.clicked.connect(self.runbatch)
         # self.runBatch.clicked.connect(self.DrawResult)
 
-
         # This small code section is for debug easier
-        self.gridTextbox.setText("/Users/Brian/Documents/UCI/EECS 221 Advanced Algorith Application/HW5/bin/warehouse-grid.csv")
-        self.gridFile=self.gridTextbox.text()
-        self.orderTextbox.setText("/Users/Brian/Documents/UCI/EECS 221 Advanced Algorith Application/HW5/bin/warehouse-orders-v01.csv")
-        self.orderFile=self.orderTextbox.text()
-        self.itemTextbox.setText("/Users/Brian/Documents/UCI/EECS 221 Advanced Algorith Application/HW5/bin/item-dimensions-tabbed.txt")
-        self.itemFile=self.itemTextbox.text()
+        self.gridTextbox.setText(
+            "/Users/Brian/Documents/UCI/EECS 221 Advanced Algorith Application/HW5/bin/warehouse-grid.csv")
+        self.gridFile = self.gridTextbox.text()
+        self.orderTextbox.setText(
+            "/Users/Brian/Documents/UCI/EECS 221 Advanced Algorith Application/HW5/bin/warehouse-orders-v01.csv")
+        self.orderFile = self.orderTextbox.text()
+        self.itemTextbox.setText(
+            "/Users/Brian/Documents/UCI/EECS 221 Advanced Algorith Application/HW5/bin/item-dimensions-tabbed.txt")
+        self.itemFile = self.itemTextbox.text()
         self.readOrder(self.orderFile)
         self.orderChanged(0)
 
@@ -241,8 +243,16 @@ class Ui_MainWindow(object):
             self.modelChanged = False
             self.startOrEndChanged = False
 
+        if self.maxWeightLineEdit.text().isdigit():
+            maxWeight = int(self.maxWeightLineEdit.text())
+        else:
+            maxWeight = sys.maxsize
+            self.maxWeightLineEdit.setText("System maximum value")
+
         content = self.wareHouse.runSolver(countEffort=self.countEffort, leftMode=leftMode, rightMode=rightMode,
-                                           orders=self.orderLineEdit.text())
+                                           orders=self.orderLineEdit.text(), maxWeight=maxWeight,
+                                           CombineOrder=self.CombineOrderCheckBox.isChecked(),
+                                           WeightLimit=self.WeightLimitCheckBox.isChecked())
 
         self.ResultTextEdit.setText(content)
 
