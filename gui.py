@@ -266,13 +266,40 @@ class Ui_MainWindow(object):
 
     def runbatch(self):
 
-        if self.wareHouse == None or self.modelChanged:
-            self.ResultTextEdit.setText(mainTSPforUi(LoadPickle=self.LoadPickle, itemFile=self.itemFile,
-                                                     warehouseGridFile=self.gridFile, orderlist=self.orderFile,
-                                                     countEffort=self.countEffort))
-
+        if self.ModeComboBox.currentText() == "Left":
+            leftMode = True
+            rightMode = False
+        elif self.ModeComboBox.currentText() == "Right":
+            leftMode = False
+            rightMode = True
         else:
+            leftMode = True
+            rightMode = True
+
+        if self.wareHouse is None or self.modelChanged or self.startOrEndChanged:
+            startNode = self.startNodeLineEdit.text() + "*" + self.startNodeLineEdit_2.text()
+            endNode = self.endNodeLineEdit.text() + "*" + self.endNodeLineEdit_2.text()
+
+            self.wareHouse = mainWareHouse(warehouseGridFile=self.gridFile, itemFile=self.itemFile,
+                                           LoadPickle=self.LoadPickle, startNode=startNode, endNode=endNode)
+            # result=mainTSPforUi(LoadPickle=self.LoadPickle, itemFile=self.itemFile,
+            #              warehouseGridFile=self.gridFile,countEffort=self.countEffort)
             self.modelChanged = False
+            self.startOrEndChanged = False
+
+        if self.maxWeightLineEdit.text().isdigit():
+            maxWeight = int(self.maxWeightLineEdit.text())
+        else:
+            maxWeight = sys.maxsize
+            self.maxWeightLineEdit.setText("System maximum value")
+        
+        content = self.wareHouse.runSolver(countEffort=self.countEffort, leftMode=leftMode, rightMode=rightMode,
+                                           orders=self.orderLineEdit.text(), maxWeight=maxWeight,
+                                           CombineOrder=self.CombineOrderCheckBox.isChecked(),
+                                           WeightLimit=self.WeightLimitCheckBox.isChecked(),
+                                           orderlist=self.orderTextbox.text())
+
+        self.ResultTextEdit.setText(content)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate

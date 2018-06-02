@@ -1,5 +1,3 @@
-import sys
-
 from Solver import *
 from data_tool import *
 
@@ -15,25 +13,28 @@ class mainWareHouse(object):
                   maxWeight=sys.maxsize, WeightLimit=False, CombineOrder=False):
         self.solver = Solver(self.model, orderlist=orderlist)
         self.solver.run('aStarSearch', countEffort=countEffort, iter=iter, leftMode=leftMode, rightMode=rightMode,
-                        orders=orders, maxWeight=maxWeight, WeightLimit=WeightLimit, CombineOrder=CombineOrder)
+                        orders=orders, maxWeight=maxWeight, WeightLimit=WeightLimit, CombineOrder=CombineOrder,
+                        orderlist=orderlist)
         return self.solver.content
 
 
-def mainTSPforUi(LoadPickle=False, countEffort=False, itemFile="", warehouseGridFile="", orderlist=""):
-    warehouseGridFile = warehouseGridFile
+# change to class and not used anymore
 
-    itemFile = itemFile
-    orderlist = orderlist
-
-    model = warehouse_model(warehouseGridFile, itemFile=itemFile, LoadPickle=LoadPickle)
-
-    solver = Solver(model, orderlist=orderlist)
-
-    solver.run('aStarSearch', countEffort=countEffort, iter=1e2)
-
-    # solver.run('DynamicProgramming')
-
-    return solver.content
+# def mainTSPforUi(LoadPickle=False, countEffort=False, itemFile="", warehouseGridFile="", orderlist=""):
+#     warehouseGridFile = warehouseGridFile
+#
+#     itemFile = itemFile
+#     orderlist = orderlist
+#
+#     model = warehouse_model(warehouseGridFile, itemFile=itemFile, LoadPickle=LoadPickle)
+#
+#     solver = Solver(model, orderlist=orderlist)
+#
+#     solver.run('aStarSearch', countEffort=countEffort, iter=1e2)
+#
+#     # solver.run('DynamicProgramming')
+#
+#     return solver.content
 
 
 if __name__ == "__main__":

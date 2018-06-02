@@ -22,14 +22,14 @@ class Solver(object):
 
         self.leftMode = True
         self.rightMode = False
-        self.CombineOrder=False
-        self.WeightLimit=False
+        self.CombineOrder = False
+        self.WeightLimit = False
 
         self.routePoints = []
         self.originRoutePoints = []
 
     def run(self, tsp_solver='aStarSearch', countEffort=False, iter=1e4, maxWeight=sys.maxsize, leftMode=True,
-            rightMode=False,orders="",WeightLimit=False,CombineOrder=False):
+            rightMode=False, orders="", WeightLimit=False, CombineOrder=False,orderlist=""):
 
         self.leftMode = leftMode
         self.rightMode = rightMode
@@ -38,8 +38,9 @@ class Solver(object):
         self.countEffort = countEffort
         self.iter = iter
         self.maxWeight = maxWeight
-        self.WeightLimit=WeightLimit
-        self.CombineOrder=CombineOrder
+        self.WeightLimit = WeightLimit
+        self.CombineOrder = CombineOrder
+        self.orderlist=orderlist
 
         if not hasattr(TSP_solver, self.tsp_solver):
             raise ValueError('Invalid update_rule "%s"' % self.tsp_solver)
@@ -109,8 +110,8 @@ class Solver(object):
     def runWithCSV(self, orderFile):
 
         orders = self.model.readOrder(orderFile)
-        content = self.content
-        content = ""
+
+        self.content = ""
 
         orders = self.orderCombiner(orders)
 
@@ -124,26 +125,12 @@ class Solver(object):
             self.itemlist = orderlist
             self.printer("Order NO. ," + str(num) + "\n")
             num += 1
-            content += (self.planner(orderlist))
+            self.content += (self.planner(orderlist))
 
-        # global minpath
-        # points=[]
-        # plt.figure(num)
-        # num+=1
-        # for node in minpath:
-        # 	val=node.split('*')
-        # 	x=0
-        # 	y=0
-        # 	if len(val)>2:
-        # 		y+=0.5
-        # 	x+=float(val[0])
-        # 	y+=float(val[1])
-        # 	points.append([x,y])
-        # self.plotTour(points)
         self.printer("Total Time for order," + str(time.time() - start_time))
-        self.writeOutFile(content)
+        self.writeOutFile(self.content)
 
-    def runWithUserSpecified(self,order=""):
+    def runWithUserSpecified(self, order=""):
         content = self.content
 
         def pathToPoints(minpath):
@@ -222,7 +209,7 @@ class Solver(object):
         '''combine order to the same trip'''
 
         if self.maxWeight == sys.maxsize or not self.CombineOrder:
-            return [orderlist]
+            return orderlist
 
         lists = []
         newlist = []
