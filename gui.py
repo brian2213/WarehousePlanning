@@ -23,6 +23,7 @@ class Ui_MainWindow(object):
         self.startOrEndChanged = True
 
         self.orders = []
+        self.numberOfWindows=0
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -183,7 +184,7 @@ class Ui_MainWindow(object):
             "/Users/Brian/Documents/UCI/EECS 221 Advanced Algorith Application/HW5/bin/warehouse-grid.csv")
         self.gridFile = self.gridTextbox.text()
         self.orderTextbox.setText(
-            "/Users/Brian/Documents/UCI/EECS 221 Advanced Algorith Application/HW5/bin/warehouse-orders-v01.csv")
+            "/Users/Brian/Documents/UCI/EECS 221 Advanced Algorith Application/HW5/bin/warehouse-orders-v02-tabbed.txt")
         self.orderFile = self.orderTextbox.text()
         self.itemTextbox.setText(
             "/Users/Brian/Documents/UCI/EECS 221 Advanced Algorith Application/HW5/bin/item-dimensions-tabbed.txt")
@@ -256,13 +257,21 @@ class Ui_MainWindow(object):
 
         self.ResultTextEdit.setText(content)
 
-        self.newWindows = Matplot_Window(model=self.wareHouse.model, points=self.wareHouse.solver.originRoutePoints,
-                                         title="Original Route")
-        self.newWindows.show()
-
-        self.newWindows2 = Matplot_Window(model=self.wareHouse.model, points=self.wareHouse.solver.routePoints,
-                                          title="Optimized Route")
-        self.newWindows2.show()
+        i=1
+        for point in self.wareHouse.solver.originRoutePoints:
+            exec("self.newWindows"+str(i)+" = Matplot_Window(model=self.wareHouse.model, points=point,title='Original Route Trip"+str(i)+"')")
+            exec("self.newWindows"+str(i)+".show()")
+            i+=1
+        j=i
+        i=1
+        for point in self.wareHouse.solver.routePoints:
+            exec("self.newWindows"+str(i+j)+" = Matplot_Window(model=self.wareHouse.model, points=point,title='Optimized Route Trip"+str(i)+"')")
+            exec("self.newWindows"+str(i+j)+".show()")
+            i+=1
+        # setattr(self, "original", newWindows)
+        # self.newWindows2 = Matplot_Window(model=self.wareHouse.model, points=self.wareHouse.solver.routePoints,
+        #                                   title="Optimized Route")
+        # self.newWindows2.show()
 
     def runbatch(self):
 
@@ -292,7 +301,7 @@ class Ui_MainWindow(object):
         else:
             maxWeight = sys.maxsize
             self.maxWeightLineEdit.setText("System maximum value")
-        
+
         content = self.wareHouse.runSolver(countEffort=self.countEffort, leftMode=leftMode, rightMode=rightMode,
                                            orders=self.orderLineEdit.text(), maxWeight=maxWeight,
                                            CombineOrder=self.CombineOrderCheckBox.isChecked(),

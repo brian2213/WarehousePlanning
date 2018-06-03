@@ -29,7 +29,7 @@ class Solver(object):
         self.originRoutePoints = []
 
     def run(self, tsp_solver='aStarSearch', countEffort=False, iter=1e4, maxWeight=sys.maxsize, leftMode=True,
-            rightMode=False, orders="", WeightLimit=False, CombineOrder=False,orderlist=""):
+            rightMode=False, orders="", WeightLimit=False, CombineOrder=False, orderlist=""):
 
         self.leftMode = leftMode
         self.rightMode = rightMode
@@ -40,7 +40,7 @@ class Solver(object):
         self.maxWeight = maxWeight
         self.WeightLimit = WeightLimit
         self.CombineOrder = CombineOrder
-        self.orderlist=orderlist
+        self.orderlist = orderlist
 
         if not hasattr(TSP_solver, self.tsp_solver):
             raise ValueError('Invalid update_rule "%s"' % self.tsp_solver)
@@ -131,7 +131,7 @@ class Solver(object):
         self.writeOutFile(self.content)
 
     def runWithUserSpecified(self, order=""):
-        content = self.content
+        self.content = ""
 
         def pathToPoints(minpath):
             points = []
@@ -149,36 +149,38 @@ class Solver(object):
         print("Planning from user specified list")
         self.itemlist = []
 
-        content = ""
+
         # self.itemlist=self.model.setOrderLists(self.model.warehouseData)
         # self.itemlist = "281610	342706	111873	198029	366109	287261	76283	254489	258540	286457".split()
         self.itemlist = order.split()
         self.itemlist = self.weightSplit(self.itemlist)
+        # import pdb
         for smalllist in self.itemlist:
+            # pdb.set_trace()
             if len(smalllist) == 0:
                 print("No Items are specified")
             else:
-                content += (self.planner(smalllist))
+                self.content += (self.planner(smalllist))
             global originalPath
             points = pathToPoints(originalPath)
 
-        self.originRoutePoints = points
-        # plt.figure(0)
-        # self.plotTour(points)
-        #
-        # global minpath
-        self.routePoints = pathToPoints(minpath)
-        # plt.figure(1)
-        # self.plotTour(points)
-        #
-        # plt.show()
+            self.originRoutePoints.append(points)
+            # plt.figure(0)
+            # self.plotTour(points)
+            #
+            # global minpath
+            self.routePoints.append(pathToPoints(minpath))
+            # plt.figure(1)
+            # self.plotTour(points)
+            #
+            # plt.show()
 
-        self.writeOutFile(content)
+        self.writeOutFile(self.content)
 
     def planner(self, nodelist):
 
         self.model.nodelist = nodelist
-        self.content = ""
+        # self.content = ""
         if len(nodelist) == 0:
             return ""
 

@@ -482,8 +482,10 @@ def aStarSearch(solver, orderNodes, upperbound=sys.maxsize, iter=1e2, printTree=
             if solver.countEffort:
 
                 for item in solver.containerMap[node]:
-                    weight += solver.model.itemProperty[item].weight if item in solver.model.itemProperty else \
+                    itemweight=solver.model.itemProperty[item].weight if item in solver.model.itemProperty else \
                         solver.model.itemProperty['avg']
+                    weight += itemweight
+                    print(itemweight)
 
                 heuristic=TotalWeight - weightSofar
             else:
