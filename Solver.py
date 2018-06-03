@@ -28,6 +28,9 @@ class Solver(object):
         self.routePoints = []
         self.originRoutePoints = []
 
+        self.combinedOrder = []
+        self.splitedOrder = []
+
     def run(self, tsp_solver='aStarSearch', countEffort=False, iter=1e4, maxWeight=sys.maxsize, leftMode=True,
             rightMode=False, orders="", WeightLimit=False, CombineOrder=False, orderlist=""):
 
@@ -118,20 +121,19 @@ class Solver(object):
         self.printer("Planning routes from " + str(orderFile))
         start_time = time.time()
         num = 1  # for draw image
-        contents=[self.content]
+        contents = [self.content]
         for orderlist in orders:
             if len(orderlist) == 0:
                 continue
             self.itemlist = orderlist
-            self.content=""
+            self.content = ""
             self.printer("Order NO. ," + str(num) + "\n")
             num += 1
-            contents.append (self.planner(orderlist))
-
+            contents.append(self.planner(orderlist))
 
         self.printer("Total Time for order," + str(time.time() - start_time))
         contents.append(self.content)
-        self.content="".join(contents)
+        self.content = "".join(contents)
         self.writeOutFile(self.content)
 
     def runWithUserSpecified(self, order=""):
@@ -153,14 +155,13 @@ class Solver(object):
         print("Planning from user specified list")
         self.itemlist = []
 
-
         # self.itemlist=self.model.setOrderLists(self.model.warehouseData)
         # self.itemlist = "281610	342706	111873	198029	366109	287261	76283	254489	258540	286457".split()
         self.itemlist = order.split()
         self.itemlist = self.weightSplit(self.itemlist)
 
-        self.originRoutePoints=[]
-        self.routePoints=[]
+        self.originRoutePoints = []
+        self.routePoints = []
         for smalllist in self.itemlist:
 
             if len(smalllist) == 0:
@@ -232,8 +233,9 @@ class Solver(object):
                     lists.append(newlist)
                     newlist = []
                 newlist.append(item)
-
         lists.append(newlist)
+
+        self.combinedOrder = lists
         return lists
 
     def weightSplit(self, orderlist):
@@ -254,7 +256,7 @@ class Solver(object):
             newlist.append(item)
 
         lists.append(newlist)
-
+        self.splitedOrder = lists
         return lists
 
     def getItemWeight(self, item):

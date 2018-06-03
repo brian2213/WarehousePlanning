@@ -25,6 +25,9 @@ class Ui_MainWindow(object):
         self.orders = []
         self.numberOfWindows=0
 
+        self.combinedOrder = []
+        self.splitedOrder = []
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(756, 543)
@@ -149,18 +152,18 @@ class Ui_MainWindow(object):
         self.OrderSplitComboBox = QtWidgets.QComboBox(self.horizontalWidget_2)
         self.OrderSplitComboBox.setObjectName("OrderSplitComboBox")
         self.gridLayout_3.addWidget(self.OrderSplitComboBox, 0, 1, 1, 1)
-        self.pushButton = QtWidgets.QPushButton(self.horizontalWidget_2)
-        self.pushButton.setObjectName("pushButton")
-        self.gridLayout_3.addWidget(self.pushButton, 0, 2, 1, 1)
+        self.SingleTripButton = QtWidgets.QPushButton(self.horizontalWidget_2)
+        self.SingleTripButton.setObjectName("pushButton")
+        self.gridLayout_3.addWidget(self.SingleTripButton, 0, 2, 1, 1)
         self.batchOrderLabel_3 = QtWidgets.QLabel(self.horizontalWidget_2)
         self.batchOrderLabel_3.setObjectName("batchOrderLabel_3")
         self.gridLayout_3.addWidget(self.batchOrderLabel_3, 1, 0, 1, 1)
         self.OrderCombineComboBox = QtWidgets.QComboBox(self.horizontalWidget_2)
         self.OrderCombineComboBox.setObjectName("OrderCombineComboBox")
         self.gridLayout_3.addWidget(self.OrderCombineComboBox, 1, 1, 1, 1)
-        self.SingleTripButton_2 = QtWidgets.QPushButton(self.horizontalWidget_2)
-        self.SingleTripButton_2.setObjectName("SingleTripButton_2")
-        self.gridLayout_3.addWidget(self.SingleTripButton_2, 1, 2, 1, 1)
+        self.SingleTripButton_Batch = QtWidgets.QPushButton(self.horizontalWidget_2)
+        self.SingleTripButton_Batch.setObjectName("SingleTripButton_2")
+        self.gridLayout_3.addWidget(self.SingleTripButton_Batch, 1, 2, 1, 1)
         self.verticalLayout.addLayout(self.gridLayout_3)
         self.horizontalLayout.addLayout(self.verticalLayout)
         self.verticalLayout_6 = QtWidgets.QVBoxLayout()
@@ -200,9 +203,11 @@ class Ui_MainWindow(object):
         self.endNodeLineEdit_2.textChanged.connect(self.chageNode)
         self.OrderComboBox.currentIndexChanged.connect(self.orderChanged)
 
-        self.runSingle.clicked.connect(self.runsingle)
+
+        self.runSingle.clicked.connect(lambda :self.runsingle(orders=self.orderLineEdit.text(),TripReset=True))
         self.runBatch.clicked.connect(self.runbatch)
-        # self.runBatch.clicked.connect(self.DrawResult)
+        self.SingleTripButton.clicked.connect(lambda :self.runsingle(orders=" ".join(self.splitedOrder[self.OrderSplitComboBox.currentIndex()])))
+        self.SingleTripButton_Batch.clicked.connect(lambda :self.runsingle(orders=" ".join(self.combinedOrder[self.OrderCombineComboBox.currentIndex()])))
 
         # This small code section is for debug easier
         self.gridTextbox.setText(
@@ -246,7 +251,7 @@ class Ui_MainWindow(object):
     def chageNode(self):
         self.startOrEndChanged = True
 
-    def runsingle(self):
+    def runsingle(self,orders="",TripReset=False):
 
         if self.ModeComboBox.currentText() == "Left":
             leftMode = True
@@ -276,11 +281,17 @@ class Ui_MainWindow(object):
             self.maxWeightLineEdit.setText("System maximum value")
 
         content = self.wareHouse.runSolver(countEffort=self.countEffort, leftMode=leftMode, rightMode=rightMode,
-                                           orders=self.orderLineEdit.text(), maxWeight=maxWeight,
+                                           orders=orders, maxWeight=maxWeight,
                                            CombineOrder=self.CombineOrderCheckBox.isChecked(),
                                            WeightLimit=self.WeightLimitCheckBox.isChecked())
 
         self.ResultTextEdit.setText(content)
+
+        if self.WeightLimitCheckBox.isChecked() and TripReset:
+            self.splitedOrder=self.wareHouse.solver.splitedOrder
+            self.OrderSplitComboBox.clear()
+            for i in range(len(self.splitedOrder)):
+                self.OrderSplitComboBox.addItem("#Trip " + str(i+1))
 
         i=1
         for point in self.wareHouse.solver.originRoutePoints:
@@ -335,6 +346,14 @@ class Ui_MainWindow(object):
 
         self.ResultTextEdit.setText(content)
 
+        if self.CombineOrderCheckBox.isChecked():
+            self.combinedOrder=self.wareHouse.solver.combinedOrder
+            self.OrderCombineComboBox.clear()
+            for i in range(len(self.combinedOrder)):
+                self.OrderCombineComboBox.addItem("#Trip " + str(i+1))
+
+
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "EECS 221"))
@@ -360,9 +379,9 @@ class Ui_MainWindow(object):
         self.ModeComboBox.setItemText(2, _translate("MainWindow", "Both"))
         self.runBatch.setText(_translate("MainWindow", "Run Batch Order"))
         self.singleOrderLabel_2.setText(_translate("MainWindow", "Order Split"))
-        self.pushButton.setText(_translate("MainWindow", "Show Trip"))
+        self.SingleTripButton.setText(_translate("MainWindow", "Show Trip"))
         self.batchOrderLabel_3.setText(_translate("MainWindow", "Order Combine"))
-        self.SingleTripButton_2.setText(_translate("MainWindow", "Show Trip"))
+        self.SingleTripButton_Batch.setText(_translate("MainWindow", "Show Trip"))
         self.label_2.setText(_translate("MainWindow", "Result"))
 
     def btnstate(self, b):
