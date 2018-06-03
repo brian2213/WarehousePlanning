@@ -118,16 +118,20 @@ class Solver(object):
         self.printer("Planning routes from " + str(orderFile))
         start_time = time.time()
         num = 1  # for draw image
-
+        contents=[self.content]
         for orderlist in orders:
             if len(orderlist) == 0:
                 continue
             self.itemlist = orderlist
+            self.content=""
             self.printer("Order NO. ," + str(num) + "\n")
             num += 1
-            self.content += (self.planner(orderlist))
+            contents.append (self.planner(orderlist))
+
 
         self.printer("Total Time for order," + str(time.time() - start_time))
+        contents.append(self.content)
+        self.content="".join(contents)
         self.writeOutFile(self.content)
 
     def runWithUserSpecified(self, order=""):
