@@ -158,9 +158,11 @@ class Solver(object):
         # self.itemlist = "281610	342706	111873	198029	366109	287261	76283	254489	258540	286457".split()
         self.itemlist = order.split()
         self.itemlist = self.weightSplit(self.itemlist)
-        # import pdb
+
+        self.originRoutePoints=[]
+        self.routePoints=[]
         for smalllist in self.itemlist:
-            # pdb.set_trace()
+
             if len(smalllist) == 0:
                 print("No Items are specified")
             else:
