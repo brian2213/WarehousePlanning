@@ -13,10 +13,19 @@ The warehouse is represented and modeled as a graph in order to take advantage o
 * pickle
 * itertools
 
+## Files
+Inputfile:
+  - **warehouse-grid.csv**: This file contains the information of the warehouse and where the items are stored in it. 
+  - **item-dimensions-tabbed.txt**: This file defines the items' weight and dimensions.
+  - **warehouse-orders-v01.csv**: This file is the input orders list the program used to generated the results.
 
-To run the program in batch processing mode, simply type "python Main.py warehouse-grid.csv item-dimensions-tabbed.txt warehouse-orders-v01.csv"
+## How to run
+To run the program in batch processing mode, simply type 
+
+''' bash
+python Main.py warehouse-grid.csv item-dimensions-tabbed.txt warehouse-orders-v01.csv
+'''
 Then the programe will automatically generate the optimized.csv file which contain all the optimal solution for all the orders
-
 
 Furthermore, the program can run in user specified mode, without specify the second argument for order list such as "python Main.py warehouse-grid.csv" 
 Then you should get the response as below, and the program will ask user for the worker starting point, ending point and order list to process. 
