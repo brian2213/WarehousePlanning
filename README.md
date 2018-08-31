@@ -1,10 +1,17 @@
 # Warehouse Route Planning
 **Author**: YiMing Chen<br /><br />
-
 ## Project
-This program can be executed on Python 2.7.14 and has dependencies as below
 
-Dependency:heapq,sys,time,pdb,os,itertools,pickle,matplotlib
+The project is about route planning for robots in storage warehouse. A warehouse route planning software will be demonstrated and the implementation including the warehouse modeling, TSP algorithm, two-side pickup handling and effort consideration will be explained.
+
+The warehouse is represented and modeled as a graph in order to take advantage on the technique of graph algorithm such as the shortest path Dijkstra's algorithm, Kruskal's minimum spanning tree and A*.
+
+## Dependencies
+* Python 2.7.14
+* heapq
+* matplotlib
+* pickle
+* itertools
 
 
 To run the program in batch processing mode, simply type "python Main.py warehouse-grid.csv item-dimensions-tabbed.txt warehouse-orders-v01.csv"
