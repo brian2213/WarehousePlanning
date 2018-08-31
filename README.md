@@ -1,9 +1,9 @@
 # EECS 221 ADV APP Algorithm
 
-# Project Part 5
+## Project Part 5
 
-# Author: YiMing Chen
-# StudentID: 28328800
+## Author: YiMing Chen
+## StudentID: 28328800
 ##################################################
 
 
