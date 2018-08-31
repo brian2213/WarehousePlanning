@@ -1,12 +1,7 @@
-# EECS 221 ADV APP Algorithm
+# Warehouse Route Planning
+**Author**: YiMing Chen<br /><br />
 
-## Project Part 5
-
-## Author: YiMing Chen
-## StudentID: 28328800
-##################################################
-
-
+## Project
 This program can be executed on Python 2.7.14 and has dependencies as below
 
 Dependency:heapq,sys,time,pdb,os,itertools,pickle,matplotlib
@@ -24,7 +19,7 @@ Below are sample output with worker starting from (2,2) ending at (8,8) with ord
 
 Be noticed that the visual tour plot will also be displayed once this script is run at local machine
 
-##################################################
+## Example output
 Read warehouse
 Reading warehouse-grid.csv File..
 
