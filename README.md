@@ -36,6 +36,7 @@ Below are sample output with worker starting from (2,2) ending at (8,8) with ord
 Be noticed that the visual tour plot will also be displayed once this script is run at local machine
 
 ## Example output
+```
 Read warehouse
 Reading warehouse-grid.csv File..
 
@@ -86,4 +87,4 @@ Original cost,300
 Shortest Path,2*2,3*2,4*2,4*2*pick,4*3,3*3,3*4,3*5,3*6,3*7,3*8,3*8*pick,3*8,3*7,4*7,4*6,5*6,6*6,7*6,7*5*pick,7*6,7*7,7*8,8*8
 Shortest Path Cost,200
 Computation Time,0.000296831130981
-
+```
