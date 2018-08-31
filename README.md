@@ -22,9 +22,9 @@ Inputfile:
 ## How to run
 To run the program in batch processing mode, simply type 
 
-''' bash
+``` 
 python Main.py warehouse-grid.csv item-dimensions-tabbed.txt warehouse-orders-v01.csv
-'''
+```
 Then the programe will automatically generate the optimized.csv file which contain all the optimal solution for all the orders
 
 Furthermore, the program can run in user specified mode, without specify the second argument for order list such as "python Main.py warehouse-grid.csv" 
